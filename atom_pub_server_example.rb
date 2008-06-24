@@ -30,3 +30,5 @@ atom_pub_server = server do
     title 'My not-so-good photography'
   end
 end
+
+puts atom_pub_server.inspect
