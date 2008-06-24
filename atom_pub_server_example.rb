@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/lib/atom_pub_server'
+require File.dirname(__FILE__) + '/quarck'
 
 atom_pub_server = server do
   # same as for author
