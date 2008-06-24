@@ -1,0 +1,3 @@
+[submodule "vendor/atom-tools"]
+	path = vendor/atom-tools
+	url = git://github.com/sr/atom-tools.git
