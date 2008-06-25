@@ -45,6 +45,7 @@ module DslSandbox
 
       collection.instance_eval(&block) if block_given?
       @collections << collection
+      collection
     end
 
     def authenticate(*args)
@@ -52,14 +53,17 @@ module DslSandbox
   end
 
   class CollectionProxy
-    attr_writer :identifier
+    attr_accessor :identifier
 
     def initialize
       @atom_feed = Atom::Feed.new
     end
 
     def title(value=nil)
-      @atom_feed.title = value if value
+      if value
+        @atom_feed.title = value
+        @identifier = value.split.first.downcase.to_sym unless @identifier
+      end
       @atom_feed.title
     end
     alias_method :title=, :title
