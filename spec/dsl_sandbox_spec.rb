@@ -39,7 +39,14 @@ describe DslSandbox do
     end
 
     it 'accepts a block yielding an author' do
-      pending 'needs to figure out how to stub CollectionProxy properly'
+      collection = @store_proxy.collection :articles do
+        title 'Foo Articles'
+        author :name => 'Simon Rozet'
+      end
+      collection.title.to_s.should == 'Foo Articles'
+      collection.identifier.should == :articles
+      collection.should have(1).authors
+      collection.authors.first.name.to_s.should == 'Simon Rozet'
     end
   end
 end

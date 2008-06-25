@@ -71,6 +71,10 @@ module DslSandbox
     def author(options={})
       @atom_feed.authors.new(options)
     end
+
+    def authors
+      @atom_feed.authors
+    end
   end
 
   class AuthorProxy
