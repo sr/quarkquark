@@ -48,5 +48,22 @@ describe DslSandbox do
       collection.should have(1).authors
       collection.authors.first.name.to_s.should == 'Simon Rozet'
     end
+
+    it 'accepts a block yielding a subtitle' do
+      collection = @store_proxy.collection { subtitle 'In Which I Foo' }
+      collection.subtitle.to_s.should == 'In Which I Foo'
+    end
+
+    it 'accepts a block yielding a contributor'
+
+    it 'accepts a block yielding a logo' do
+      collection = @store_proxy.collection { logo 'http://example.org/logo.png' }
+      collection.logo.should == 'http://example.org/logo.png'
+    end
+
+    it 'accepts a block yielding an icon' do
+      collection = @store_proxy.collection { icon 'http://example.org/logo.png' }
+      collection.icon.should == 'http://example.org/logo.png'
+    end
   end
 end
