@@ -81,8 +81,16 @@ module DslSandbox
       @atom_feed.authors.new(options)
     end
 
+    def contributor(options={})
+      @atom_feed.contributors.new(options)
+    end
+
     def authors
       @atom_feed.authors
+    end
+
+    def contributors
+      @atom_feed.contributors
     end
   end
 

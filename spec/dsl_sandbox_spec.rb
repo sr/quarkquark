@@ -54,7 +54,14 @@ describe DslSandbox do
       collection.subtitle.to_s.should == 'In Which I Foo'
     end
 
-    it 'accepts a block yielding a contributor'
+    it 'accepts a block yielding a contributor' do
+      collection = @store_proxy.collection {
+        contributor :name => 'Primo', :email => 'primo@gangstarr.com'
+      }
+      collection.should have(1).contributors
+      collection.contributors.first.name.should == 'Primo'
+      collection.contributors.first.email.should == 'primo@gangstarr.com'
+    end
 
     it 'accepts a block yielding a logo' do
       collection = @store_proxy.collection { logo 'http://example.org/logo.png' }
