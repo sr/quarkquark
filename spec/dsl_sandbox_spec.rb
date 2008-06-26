@@ -74,12 +74,12 @@ describe DslSandbox do
     end
 
     describe 'author' do
-      it 'accepts an hash of options' do
+      it 'takes an hash of options' do
         collection = @store_proxy.collection { author :name => 'primo' }
         collection.authors.first.name.should == 'primo'
       end
 
-      it 'accepts a block' do
+      it 'takes a block' do
         collection = @store_proxy.collection do
           author do
             name 'primo'
@@ -94,12 +94,12 @@ describe DslSandbox do
     end
 
     describe 'contributor' do
-      it 'accepts an hash of options' do
+      it 'takes an hash of options' do
         collection = @store_proxy.collection { contributor :name => 'primo' }
         collection.contributors.first.name.should == 'primo'
       end
 
-      it 'accepts a block' do
+      it 'takes a block' do
         collection = @store_proxy.collection do
           contributor do
             name 'primo'
