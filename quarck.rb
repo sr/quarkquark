@@ -1,12 +1,8 @@
 $: << File.expand_path(File.dirname(__FILE__) + '/vendor/atom-tools/lib')
 require 'atom/feed'
+require 'core_ext'
 
 module DslSandbox 
-  class Class
-    def self.dsl_accessor
-    end
-  end
-
   class ServerProxy
     def initialize
       @authors = []
