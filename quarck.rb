@@ -77,8 +77,14 @@ module DslSandbox
     end
     alias_method :title=, :title
 
-    def author(options={})
-      @atom_feed.authors.new(options)
+    def author(options={}, &block)
+      if block_given?
+        author = AuthorProxy.new
+        author.instance_eval(&block)
+        @atom_feed.authors << author.to_atom_author
+      else
+        @atom_feed.authors.new(options)
+      end
     end
 
     def contributor(options={})
@@ -96,7 +102,26 @@ module DslSandbox
 
   class AuthorProxy
     def initialize(options={})
-      @author = Atom::Person.new
+      @author = Atom::Author.new
+    end
+
+    def name(value=nil)
+      @author.name = value if value
+      @author.name
+    end
+
+    def email(value=nil)
+      @author.email = value if value
+      @author.email
+    end
+
+    def uri(value=nil)
+      @author.uri = value if value
+      @author.uri
+    end
+
+    def to_atom_author
+      @author
     end
   end
 end

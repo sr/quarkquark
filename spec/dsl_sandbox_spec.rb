@@ -72,5 +72,25 @@ describe DslSandbox do
       collection = @store_proxy.collection { icon 'http://example.org/logo.png' }
       collection.icon.should == 'http://example.org/logo.png'
     end
+
+    describe 'author' do
+      it 'accepts an hash of options' do
+        collection = @store_proxy.collection { author :name => 'primo' }
+        collection.authors.first.name.should == 'primo'
+      end
+
+      it 'accepts a block' do
+        collection = @store_proxy.collection do
+          author do
+            name 'primo'
+            email 'primo@real-hip-hop.org'
+            uri 'http://real-hip-hop.org/primo'
+          end
+        end
+        collection.authors.first.name.should == 'primo'
+        collection.authors.first.email.should == 'primo@real-hip-hop.org'
+        collection.authors.first.uri.should == 'http://real-hip-hop.org/primo'
+      end
+    end
   end
 end
