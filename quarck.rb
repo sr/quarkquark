@@ -59,6 +59,15 @@ module DslSandbox
       @atom_feed = Atom::Feed.new
     end
 
+    %w(subtitle logo icon).each do |element|
+      self.class_eval %Q{
+        def #{element}(value=nil)
+          @atom_feed.send("#{element}=", value) if value
+          @atom_feed.send("#{element}")
+        end
+      }
+    end
+
     def title(value=nil)
       if value
         @atom_feed.title = value
