@@ -92,5 +92,25 @@ describe DslSandbox do
         collection.authors.first.uri.should == 'http://real-hip-hop.org/primo'
       end
     end
+
+    describe 'contributor' do
+      it 'accepts an hash of options' do
+        collection = @store_proxy.collection { contributor :name => 'primo' }
+        collection.contributors.first.name.should == 'primo'
+      end
+
+      it 'accepts a block' do
+        collection = @store_proxy.collection do
+          contributor do
+            name 'primo'
+            email 'primo@real-hip-hop.org'
+            uri 'http://real-hip-hop.org/primo'
+          end
+        end
+        collection.contributors.first.name.should == 'primo'
+        collection.contributors.first.email.should == 'primo@real-hip-hop.org'
+        collection.contributors.first.uri.should == 'http://real-hip-hop.org/primo'
+      end
+    end
   end
 end

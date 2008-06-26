@@ -79,7 +79,7 @@ module DslSandbox
 
     def author(options={}, &block)
       if block_given?
-        author = AuthorProxy.new
+        author = PersonProxy.new
         author.instance_eval(&block)
         @atom_feed.authors << author.to_atom_author
       else
@@ -87,8 +87,14 @@ module DslSandbox
       end
     end
 
-    def contributor(options={})
-      @atom_feed.contributors.new(options)
+    def contributor(options={}, &block)
+      if block_given?
+        person = PersonProxy.new
+        person.instance_eval(&block)
+        @atom_feed.contributors << person.to_atom_contributor
+      else
+        @atom_feed.contributors.new(options)
+      end
     end
 
     def authors
@@ -100,28 +106,32 @@ module DslSandbox
     end
   end
 
-  class AuthorProxy
+  class PersonProxy
     def initialize(options={})
-      @author = Atom::Author.new
+      @person = Atom::Person.new
     end
 
     def name(value=nil)
-      @author.name = value if value
-      @author.name
+      @person.name = value if value
+      @person.name
     end
 
     def email(value=nil)
-      @author.email = value if value
-      @author.email
+      @person.email = value if value
+      @person.email
     end
 
     def uri(value=nil)
-      @author.uri = value if value
-      @author.uri
+      @person.uri = value if value
+      @person.uri
     end
 
     def to_atom_author
-      @author
+      Atom::Author.new(:name => @person.name, :uri => @person.uri, :email => @person.email)
+    end
+
+    def to_atom_contributor
+      Atom::Contributor.new(:name => @person.name, :uri => @person.uri, :email => @person.email)
     end
   end
 end
