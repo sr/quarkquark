@@ -77,43 +77,14 @@ module DslSandbox
 
     %w(author contributor).each do |person_type|
       class_eval <<-EOF
-        def #{person_type}(options={}, &block)
-          if block_given?
-            person = PersonProxy.new
-            person.instance_eval(&block)
-            @atom_feed.#{person_type}s << person.to_atom_#{person_type}
-          else
-            @atom_feed.#{person_type}s.new(options)
-          end
+        def #{person_type}(options={})
+          @atom_feed.#{person_type}s.new(options)
         end
 
         def #{person_type}s
           @atom_feed.#{person_type}s
         end
       EOF
-    end
-  end
-
-  class PersonProxy
-    def initialize(options={})
-      @person = Atom::Person.new
-    end
-
-    %w(name email uri).each do |attribute|
-      self.class_eval <<-EOF
-        def #{attribute}(value=nil)
-          @person.#{attribute} = value if value
-          @person.#{attribute}
-        end
-      EOF
-    end
-
-    def to_atom_author
-      Atom::Author.new(:name => @person.name, :uri => @person.uri, :email => @person.email)
-    end
-
-    def to_atom_contributor
-      Atom::Contributor.new(:name => @person.name, :uri => @person.uri, :email => @person.email)
     end
   end
 end
