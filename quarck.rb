@@ -97,19 +97,13 @@ module DslSandbox
       @person = Atom::Person.new
     end
 
-    def name(value=nil)
-      @person.name = value if value
-      @person.name
-    end
-
-    def email(value=nil)
-      @person.email = value if value
-      @person.email
-    end
-
-    def uri(value=nil)
-      @person.uri = value if value
-      @person.uri
+    %w(name email uri).each do |attribute|
+      self.class_eval <<-EOF
+        def #{attribute}(value=nil)
+          @person.#{attribute} = value if value
+          @person.#{attribute}
+        end
+      EOF
     end
 
     def to_atom_author
