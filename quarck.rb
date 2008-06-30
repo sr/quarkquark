@@ -1,11 +1,13 @@
 $: << File.expand_path(File.dirname(__FILE__) + '/vendor/atom-tools/lib')
 require 'atom/feed'
-require 'core_ext'
 
 module DslSandbox 
   class ServerProxy
+    attr_accessor :authors, :contributors
+
     def initialize
       @authors = []
+      @contributors = []
       @collections = []
     end
 
@@ -15,11 +17,13 @@ module DslSandbox
     end
     alias_method :store=, :store
 
-    def author(options={}, &block)
-      raise ArgumentError if options.empty? && !block_given?
-      author = AuthorProxy.new(options)
-      author.instance_eval(&block) if block_given?
-      @authors << author
+    %w(author contributor).each do |person_type|
+      class_eval(<<-EOF, __FILE__, __LINE__)
+        def #{person_type}(options={})
+          raise ArgumentError if options.empty?
+          @#{person_type}s << Atom::#{person_type.capitalize}.new(options)
+        end
+      EOF
     end
 
     def collection(*args, &block)

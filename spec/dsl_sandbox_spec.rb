@@ -8,6 +8,26 @@ describe DslSandbox do
     @store_proxy = DslSandbox::ServerProxy.new
   end
 
+  describe 'global author' do
+    it 'appends author' do
+      server { author :name => 'foo' }.should have(1).authors
+    end
+
+    it 'raise ArgumentError if no options provided' do
+      lambda { server { author } }.should raise_error(ArgumentError)
+    end
+  end
+
+  describe 'global contributor' do
+    it 'appends contributor' do
+      server { contributor :name => 'foo' }.should have(1).contributors
+    end
+
+    it 'raise ArgumentError if no options provided' do
+      lambda { server { contributor } }.should raise_error(ArgumentError)
+    end
+  end
+
   describe 'collection' do
     before(:each) do
       @collection_proxy = DslSandbox::CollectionProxy.new
