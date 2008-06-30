@@ -73,32 +73,22 @@ module DslSandbox
     end
     alias_method :title=, :title
 
-    def author(options={}, &block)
-      if block_given?
-        author = PersonProxy.new
-        author.instance_eval(&block)
-        @atom_feed.authors << author.to_atom_author
-      else
-        @atom_feed.authors.new(options)
-      end
-    end
+    %w(author contributor).each do |person_type|
+      self.class_eval <<-EOF
+        def #{person_type}(options={}, &block)
+          if block_given?
+            person = PersonProxy.new
+            person.instance_eval(&block)
+            @atom_feed.#{person_type}s << person.to_atom_#{person_type}
+          else
+            @atom_feed.#{person_type}s.new(options)
+          end
+        end
 
-    def contributor(options={}, &block)
-      if block_given?
-        person = PersonProxy.new
-        person.instance_eval(&block)
-        @atom_feed.contributors << person.to_atom_contributor
-      else
-        @atom_feed.contributors.new(options)
-      end
-    end
-
-    def authors
-      @atom_feed.authors
-    end
-
-    def contributors
-      @atom_feed.contributors
+        def #{person_type}s
+          @atom_feed.#{person_type}s
+        end
+      EOF
     end
   end
 
