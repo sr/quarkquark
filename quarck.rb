@@ -48,33 +48,35 @@ module DslSandbox
     end
   end
 
-  class CollectionProxy
+  class CollectionProxy < Atom::Feed
     attr_accessor :identifier
 
     def initialize
       @atom_feed = Atom::Feed.new
+      super
     end
 
-    %w(subtitle logo icon).each do |element|
-      self.class_eval %Q{
+    %w(title subtitle logo icon).each do |element|
+      class_eval(<<-EOF, __FILE__, __LINE__)
+        alias_method :orig_#{element}, :#{element}
         def #{element}(value=nil)
-          @atom_feed.send("#{element}=", value) if value
-          @atom_feed.send("#{element}")
+          send(:#{element}=, value) if value
+          orig_#{element}
         end
-      }
+      EOF
     end
 
-    def title(value=nil)
-      if value
-        @atom_feed.title = value
-        @identifier = value.split.first.downcase.to_sym unless @identifier
-      end
-      @atom_feed.title
+    def identifier
+      @identifier ||= case title.to_s
+        when String then title.to_s.split.first.downcase.to_sym
+        when Symbol then title
+        else
+          :nil
+        end
     end
-    alias_method :title=, :title
 
     %w(author contributor).each do |person_type|
-      self.class_eval <<-EOF
+      class_eval <<-EOF
         def #{person_type}(options={}, &block)
           if block_given?
             person = PersonProxy.new
