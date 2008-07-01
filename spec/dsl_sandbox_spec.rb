@@ -1,11 +1,11 @@
 require 'rubygems'
 require 'spec'
 
-require File.dirname(__FILE__) + '/../quarck'
+require File.dirname(__FILE__) + '/../lib/quarck'
 
-describe DslSandbox do
+describe AtomPub::DSL do
   before(:each) do
-    @store_proxy = DslSandbox::ServerProxy.new
+    @store_proxy = AtomPub::DSL::ServerProxy.new
   end
 
   describe 'global author' do
@@ -30,8 +30,8 @@ describe DslSandbox do
 
   describe 'collection' do
     before(:each) do
-      @collection_proxy = DslSandbox::CollectionProxy.new
-      DslSandbox::CollectionProxy.stub!(:new).and_return(@collection_proxy)
+      @collection_proxy = AtomPub::DSL::CollectionProxy.new
+      AtomPub::DSL::CollectionProxy.stub!(:new).and_return(@collection_proxy)
     end
 
     it 'takes an identifier and makes a title from it' do
