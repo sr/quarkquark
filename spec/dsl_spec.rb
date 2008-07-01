@@ -8,6 +8,15 @@ describe AtomPub::DSL do
     @store_proxy = AtomPub::DSL::ServerProxy.new
   end
 
+  describe 'store' do
+    it 'requires specified store' do
+      Kernel.should_receive(:require).with('memory_store')
+      server { store :memory }
+    end
+
+    it 'instantiates the store with given options'
+  end
+
   describe 'global author' do
     it 'appends author' do
       server { author :name => 'foo' }.should have(1).authors

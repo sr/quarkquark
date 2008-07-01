@@ -13,6 +13,7 @@ module AtomPub
       end
 
       def store(name, options={})
+        Kernel.require "#{name}_store" # so it can be spec'ed
         @store = [name, options={}] if name
         @store || name
       end
