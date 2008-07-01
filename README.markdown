@@ -4,8 +4,8 @@ QuarckQuarck
 Easily creates an [AtomPub][] server through a DSL.
 
 
-**Note:** In the spirit of "show early what you've got", I'll push here any code I wrote
-even if it is doesn't even run or not tested or stupid, etc.
-Of course, any input is more than welcome :-)
+**Note:** In the spirit of "[You Are Not Your Code][yanyc]", I'll be transparent,
+share my work constantly and solicit and appreciate critiques.
 
   [AtomPub]: http://tools.ietf.org/html/rfc5023
+  [yanyc]: http://blog.red-bean.com/sussman/?p=96
