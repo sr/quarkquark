@@ -2,6 +2,8 @@ $: << File.expand_path(File.dirname(__FILE__) + '/vendor/atom-tools/lib')
 require 'atom/feed'
 
 module AtomPub
+  class Server
+  end
   module DSL
     class ServerProxy
       attr_accessor :authors, :contributors, :collections
@@ -65,6 +67,8 @@ module AtomPub
         @atom_feed.title ||= @identifier.to_s.capitalize
       end
 
+      alias :title= :title
+
       %w(subtitle logo icon).each do |element|
         class_eval(<<-EOF, __FILE__, __LINE__)
           def #{element}(value=nil)
@@ -74,7 +78,6 @@ module AtomPub
         EOF
       end
 
-      alias :title= :title
 
       %w(author contributor).each do |person_type|
         class_eval <<-EOF
