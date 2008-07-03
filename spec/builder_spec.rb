@@ -9,11 +9,13 @@ describe AtomPub::Builder do
 
   describe 'When initializing store' do
     before(:each) do
-      @store = mock('store')
+      module AtomPub::Store; class MyAtomPubStore; end; end
+      @store = mock('MyAtomPubStore')
     end
 
     it 'initialize the store with given options' do
-      @proxy.should_receive(:store).and_return(@store)
+      @proxy.should_receive(:store).twice.and_return([:my_atom_pub_store, {:foo => 1}])
+      AtomPub::Store::MyAtomPubStore.should_receive(:new).with(:foo => 1).and_return(@store)
       @server = AtomPub::Builder.new(@proxy)
     end
   end
