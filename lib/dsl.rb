@@ -31,7 +31,7 @@ module AtomPub
     end
 
     def collection(*args, &block)
-      collection = CollectionProxy.new
+      collection = Collection.new
       case args.length
       when 1
         collection.identifier = args.first
@@ -49,7 +49,7 @@ module AtomPub
     end
   end
 
-  class CollectionProxy
+  class Collection
     attr_accessor :identifier
 
     def initialize
