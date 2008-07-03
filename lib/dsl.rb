@@ -34,17 +34,10 @@ module AtomPub
         collection = CollectionProxy.new
         case args.length
         when 1
-          case identifier_or_title = args.first
-          when Symbol
-            collection.title      = identifier_or_title.to_s.capitalize
-            collection.identifier = identifier_or_title
-          when String
-            collection.title      = identifier_or_title
-            collection.identifier = identifier_or_title.split.first.downcase.to_sym
-          end
-        when 2
-          collection.title      = args.last
           collection.identifier = args.first
+        when 2
+          collection.identifier = args.first
+          collection.title      = args.last
         end
 
         collection.instance_eval(&block) if block_given?
@@ -64,15 +57,15 @@ module AtomPub
       end
 
       def identifier
-        @identifier ||= case title.to_s
-          when String then title.to_s.split.first.downcase.to_sym
-          when Symbol then title
-          else
-            :nil
-          end
+        @identifier ||= title.to_s.split.first.downcase.to_sym
       end
 
-      %w(title subtitle logo icon).each do |element|
+      def title(value=nil)
+        @atom_feed.title = value if value
+        @atom_feed.title ||= @identifier.to_s.capitalize
+      end
+
+      %w(subtitle logo icon).each do |element|
         class_eval(<<-EOF, __FILE__, __LINE__)
           def #{element}(value=nil)
             @atom_feed.send(:#{element}=, value) if value
