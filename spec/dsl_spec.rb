@@ -14,7 +14,14 @@ describe AtomPub::DSL do
       server { store :memory }
     end
 
-    it 'instantiates the store with given options'
+    it 'raises LoadError with an useful message if unknown store' do
+      lambda { server { store :memory } }.should raise_error(LoadError, "Unknown store `memory'.")
+    end
+
+    it 'stores the store and with given options in an array' do
+      Kernel.stub!(:require).and_return(true)
+      server { store :memory, :foo => 1 }.store.should == [:memory, {:foo => 1}]
+    end
   end
 
   describe 'global author' do

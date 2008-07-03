@@ -12,10 +12,12 @@ module AtomPub
         @collections = []
       end
 
-      def store(name, options={})
+      def store(name=nil, options={})
         Kernel.require "#{name}_store" # so it can be spec'ed
-        @store = [name, options={}] if name
-        @store || name
+        @store = [name, options] if name
+        @store
+      rescue LoadError
+        raise LoadError, "Unknown store `#{name}'."
       end
       alias_method :store=, :store
 
