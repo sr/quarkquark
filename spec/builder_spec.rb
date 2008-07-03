@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/spec_helper' 
 require 'dsl'
-require File.dirname(__FILE__) + '/../lib/builder' # conflict with the gem builder
+require File.dirname(__FILE__) + '/../lib/builder' # conflicts with the gem builder
 
 describe AtomPub::Builder do
   before(:each) do
@@ -17,7 +17,7 @@ describe AtomPub::Builder do
       @proxy.stub!(:store).and_return([:my_atom_pub_store, {:foo => 1}])
     end
 
-    it 'initialize the store with given options' do
+    it 'initializes the store with given options' do
       @proxy.should_receive(:store).twice.and_return([:my_atom_pub_store, {:foo => 1}])
       AtomPub::Store::MyAtomPubStore.should_receive(:new).with(:foo => 1).and_return(@store)
       @server = AtomPub::Builder.new(@proxy)
