@@ -56,6 +56,11 @@ describe AtomPub::Server do
       }.should raise_error(RuntimeError, 'Please configure a store first.')
     end
 
+    it 'register the collection to the store' do
+      @store.should_receive(:register_collection).exactly(3).times
+      3.times { |i| @server.collection "foo_#{i}".to_sym }
+    end
+
     it 'takes an identifier and makes a title from it' do
       collection = @server.collection(:linking)
       collection.title.to_s.should == 'Linking'

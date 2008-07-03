@@ -1,6 +1,5 @@
 $: << File.expand_path(File.dirname(__FILE__) + '/vendor/atom-tools/lib')
 require 'atom/feed'
-
 require 'core_ext'
 
 module AtomPub
@@ -43,7 +42,7 @@ module AtomPub
       end
 
       collection.instance_eval(&block) if block_given?
-      @collections << collection
+      atom_store.register_collection(collection)
       collection
     end
 
