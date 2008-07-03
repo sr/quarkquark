@@ -1,24 +1,32 @@
 require File.dirname(__FILE__) + '/spec_helper'
 require 'dsl'
 
-describe AtomPub::DSL do
+describe AtomPub::Server do
   before(:each) do
-    @store_proxy = AtomPub::DSL::ServerProxy.new
+    @server = AtomPub::Server.new
   end
 
-  describe 'store' do
+  describe 'When registering a store' do
+    before(:each) do
+      module AtomPub::Store; class DataMapper; end; end
+      AtomPub::Store::DataMapper.stub!(:new).and_return(true)
+    end
+
     it 'requires specified store' do
-      Kernel.should_receive(:require).with('memory_store')
-      server { store :memory }
+      Kernel.should_receive(:require).with('data_mapper_store').and_return(true)
+      @server.store(:data_mapper)
     end
 
     it 'raises LoadError with an useful message if unknown store' do
-      lambda { server { store :memory } }.should raise_error(LoadError, "Unknown store `memory'.")
+      lambda {
+        @server.store(:memory)
+      }.should raise_error(RuntimeError, "Unknown store `memory'.")
     end
 
-    it 'stores the store and with given options in an array' do
+    it 'initializes the store with given options' do
       Kernel.stub!(:require).and_return(true)
-      server { store :memory, :foo => 1 }.store.should == [:memory, {:foo => 1}]
+      AtomPub::Store::DataMapper.should_receive(:new).with(:adapter => 'sqlite3').and_return(@store)
+      @server.store(:data_mapper, :adapter => 'sqlite3')
     end
   end
 
