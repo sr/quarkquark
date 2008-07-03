@@ -33,7 +33,7 @@ module AtomPub
       end
 
       collection.instance_eval(&block) if block_given?
-      atom_store.register_collection(collection)
+      @store.register_collection(collection)
       collection
     end
 

@@ -1,5 +1,5 @@
 require File.dirname(__FILE__) + '/spec_helper'
-require 'dsl'
+require 'atom_pub_server'
 
 describe AtomPub::Server do
   before(:each) do
