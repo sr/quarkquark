@@ -20,15 +20,6 @@ module AtomPub
       raise "Unknown store `#{name}'."
     end
 
-    %w(author contributor).each do |person_type|
-      class_eval(<<-EOF, __FILE__, __LINE__)
-        def #{person_type}(options={})
-          raise ArgumentError if options.empty?
-          @#{person_type}s << Atom::#{person_type.capitalize}.new(options)
-        end
-      EOF
-    end
-
     def collection(*args, &block)
       raise 'Please configure a store first.' unless @store
 
@@ -46,7 +37,13 @@ module AtomPub
       collection
     end
 
-    def authenticate(*args)
+    %w(author contributor).each do |person_type|
+      class_eval(<<-EOF, __FILE__, __LINE__)
+        def #{person_type}(options={})
+          raise ArgumentError if options.empty?
+          @#{person_type}s << Atom::#{person_type.capitalize}.new(options)
+        end
+      EOF
     end
   end
 
