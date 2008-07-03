@@ -1,7 +1,7 @@
 require 'rubygems'
 require 'spec'
 
-require File.dirname(__FILE__) + '/../lib/quarck'
+require File.dirname(__FILE__) + '/../lib/dsl'
 
 describe AtomPub::DSL do
   before(:each) do
