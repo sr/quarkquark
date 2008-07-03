@@ -4,7 +4,7 @@ require 'atom/feed'
 module AtomPub
   module DSL
     class ServerProxy
-      attr_accessor :authors, :contributors
+      attr_accessor :authors, :contributors, :collections
 
       def initialize
         @authors = []

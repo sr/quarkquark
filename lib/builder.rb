@@ -7,6 +7,9 @@ module AtomPub
 
     def build
       @store = instantiate_store
+      @proxy.collections.each { |collection|
+        @store.register_collection(collection)
+      }
     end
 
     def instantiate_store
