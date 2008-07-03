@@ -31,6 +31,8 @@ module AtomPub
     end
 
     def collection(*args, &block)
+      raise 'Please configure a store first.' unless @store
+
       collection = Collection.new
       case args.length
       when 1

@@ -56,8 +56,13 @@ describe AtomPub::Server do
 
   describe 'collection' do
     before(:each) do
-      @collection_proxy = AtomPub::Collection.new
-      AtomPub::Collection.stub!(:new).and_return(@collection_proxy)
+      @server.instance_variable_set(:@store, true)
+    end
+
+    it 'raises RuntimeError if not store configured' do
+      lambda {
+        AtomPub::Server.new.collection
+      }.should raise_error(RuntimeError, 'Please configure a store first.')
     end
 
     it 'takes an identifier and makes a title from it' do
