@@ -3,15 +3,14 @@ require 'dsl'
 
 describe AtomPub::Server do
   before(:each) do
+    module AtomPub::Store; class DataMapper; end; end
+
     @server = AtomPub::Server.new
+    @store = mock('DataMapperStore', :register_collection => true)
+    AtomPub::Store::DataMapper.stub!(:new).and_return(@store)
   end
 
   describe 'When registering a store' do
-    before(:each) do
-      module AtomPub::Store; class DataMapper; end; end
-      AtomPub::Store::DataMapper.stub!(:new).and_return(true)
-    end
-
     it 'requires specified store' do
       Kernel.should_receive(:require).with('data_mapper_store').and_return(true)
       @server.store(:data_mapper)
@@ -19,44 +18,36 @@ describe AtomPub::Server do
 
     it 'raises LoadError with an useful message if unknown store' do
       lambda {
-        @server.store(:memory)
-      }.should raise_error(RuntimeError, "Unknown store `memory'.")
+        @server.store(:data_mapper)
+      }.should raise_error(RuntimeError, "Unknown store `data_mapper'.")
     end
 
     it 'initializes the store with given options' do
       Kernel.stub!(:require).and_return(true)
-      AtomPub::Store::DataMapper.should_receive(:new).with(:adapter => 'sqlite3').and_return(@store)
+      AtomPub::Store::DataMapper.should_receive(:new).with(:adapter => 'sqlite3')
       @server.store(:data_mapper, :adapter => 'sqlite3')
     end
   end
 
-  describe 'global author' do
-    it 'appends author' do
-      @server.author(:name => 'foo').should have(1).authors
-    end
+  %w(author contributor).each do |person_type|
+    describe "global #{person_type}" do
+      it "appends #{person_type}" do
+        @server.send(person_type, :name => 'foo')
+        @server.send("#{person_type}s").length.should == 1
+      end
 
-    it 'raise ArgumentError if no options provided' do
-      lambda {
-        @server.author
-      }.should raise_error(ArgumentError)
-    end
-  end
-
-  describe 'global contributor' do
-    it 'appends contributor' do
-      @server.contributor(:name => 'foo').should have(1).contributors
-    end
-
-    it 'raise ArgumentError if no options provided' do
-      lambda {
-        @server.contributor
-      }.should raise_error(ArgumentError)
+      it 'raises ArgumentError if no options provided' do
+        lambda {
+          @server.send(person_type)
+        }.should raise_error(ArgumentError)
+      end
     end
   end
 
   describe 'collection' do
     before(:each) do
-      @server.instance_variable_set(:@store, true)
+      Kernel.should_receive(:require).with('data_mapper_store').and_return(true)
+      @server.store :data_mapper
     end
 
     it 'raises RuntimeError if not store configured' do
