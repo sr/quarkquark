@@ -1,4 +1,6 @@
-$: << File.expand_path(File.dirname(__FILE__) + '/../vendor/coset/lib')
+$LOAD_PATH << File.expand_path(File.dirname(__FILE__) + '/../../vendor/coset/lib')
+
+require 'rubygems'
 require 'atom/service'
 require 'atom/collection'
 require 'coset'

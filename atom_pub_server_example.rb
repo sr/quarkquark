@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/lib/dsl'
+require File.dirname(__FILE__) + '/lib/atom_pub/dsl'
 
 server do
   store :memory
