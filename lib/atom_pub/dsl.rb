@@ -1,5 +1,10 @@
-require File.dirname(__FILE__) + '/core_ext'
 require File.dirname(__FILE__) + '/server'
+
+class String
+  def camelize
+    self.gsub(/\/(.?)/) { "::" + $1.upcase }.gsub(/(^|_)(.)/) { $2.upcase }
+  end
+end
 
 module AtomPub
   module DSL
