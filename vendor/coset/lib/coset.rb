@@ -4,6 +4,12 @@ require 'pp'
 
 require File.dirname(__FILE__) + '/coset/mimeparse'
 
+module Rack
+  class Response
+    def <<(s); write(s); end
+  end
+end
+
 class Coset
   def call(env)
     @env = env
@@ -44,6 +50,8 @@ class Coset
   end
 
   attr_reader :res, :req, :env
+  alias :response :res
+  alias :request :req
 
   def wants(type, &block)
     @wants_content_types << type   # keep track of order

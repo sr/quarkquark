@@ -17,14 +17,14 @@ class TestApp2 < Coset
   end
 
   GET "/urgs" do
-    res.write "meh"
+    response << "meh"
     quux!
   end
 end
 
 class FooApp < Coset
   GET "/foo" do
-    res.write "foo"
+    response << "foo"
   end
 
   GET "/a" do
@@ -40,11 +40,11 @@ end
 
 class BarApp < FooApp
   GET "/bar" do
-    res.write "bar"
+    response << "bar"
   end
 
   GET "/a" do
-    res.write "b"
+    response << "b"
   end
 
   map_exception IndexError, 404
