@@ -71,16 +71,15 @@ module AtomPub
         @atom_feed.title = value if value
         @atom_feed.title ||= @identifier.to_s.capitalize
       end
-
-      def is_a?(what)
-        return true if what == Atom::Collection
-        super(what)
-      end
-
       alias :title= :title
 
       def method_missing(method, *args)
         @atom_feed.send(method, *args)
+      end
+
+      def is_a?(what)
+        return true if what == Atom::Collection
+        super(what)
       end
 
       def to_s
