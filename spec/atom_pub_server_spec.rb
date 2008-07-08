@@ -1,11 +1,11 @@
 require File.dirname(__FILE__) + '/spec_helper'
-require 'atom_pub_server'
+require 'dsl'
 
-describe AtomPub::Server do
+describe AtomPub::DSL do
   before(:each) do
     module AtomPub::Store; class DataMapper; end; end
 
-    @server = AtomPub::Server.new
+    @server = AtomPub::DSL::Server.new
     @store = mock('DataMapperStore', :register_collection => true)
     AtomPub::Store::DataMapper.stub!(:new).and_return(@store)
   end
@@ -52,7 +52,7 @@ describe AtomPub::Server do
 
     it 'raises RuntimeError if not store configured' do
       lambda {
-        AtomPub::Server.new.collection
+        AtomPub::DSL::Server.new.collection
       }.should raise_error(RuntimeError, 'Please configure a store first.')
     end
 
