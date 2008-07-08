@@ -12,7 +12,7 @@ describe AtomPub::DSL do
 
   describe 'When registering a store' do
     it 'requires specified store' do
-      Kernel.should_receive(:require).with('data_mapper_store').and_return(true)
+      Kernel.should_receive(:require).with(/data_mapper_store/).and_return(true)
       @server.store(:data_mapper)
     end
 
@@ -46,7 +46,7 @@ describe AtomPub::DSL do
 
   describe 'collection' do
     before(:each) do
-      Kernel.should_receive(:require).with('data_mapper_store').and_return(true)
+      Kernel.should_receive(:require).with(/data_mapper_store/).and_return(true)
       @server.store :data_mapper
     end
 

@@ -15,14 +15,14 @@ module AtomPub
       end
 
       def run!
-        app = Server.new(@store)
+        app = AtomPub::Server.new(@store)
         app = Rack::CommonLogger.new(app)
         app = Rack::Lint.new(app)
         Rack::Handler::Mongrel.run(app, :Port => 3000)
       end
 
       def store(name, options={})
-        Kernel.require "#{name}_store"
+        Kernel.require File.dirname(__FILE__) + "/store/#{name}_store"
         klass = name.to_s.camelize
         @store = AtomPub::Store.const_get(klass).new(options)
       rescue LoadError
@@ -100,5 +100,5 @@ end
 def server(&block)
   server = AtomPub::DSL::Server.new
   server.instance_eval(&block)
-  server
+  server.run!
 end
