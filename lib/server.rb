@@ -69,29 +69,3 @@ module AtomPub
     end
   end
 end
-
-__END__
-svc = Atom::Service.new
-ws = Atom::Workspace.new
-col = Atom::Collection.new("/blogone")
-
-svc.workspaces << ws
-
-ws.title = "Glueball server"
-ws.collections << col
-
-col.title = "Blog one"
-col.id = "blogone"
-col << Atom::Entry.new { |e|
-  e.id = `uuidgen`.strip
-  e.title = "An entry"
-  e.content = "the content"
-}
-
-app = Glueball.new(svc)
-# app = Rack::Lint.new(app)
-app = Rack::ShowExceptions.new(app)
-app = Rack::ShowStatus.new(app)
-app = Rack::CommonLogger.new(app)
-
-Rack::Handler::WEBrick.run app, :Port => 9266
