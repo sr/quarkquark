@@ -9,11 +9,9 @@ end
 module AtomPub
   module DSL
     class Server
-      attr_accessor :authors, :contributors, :collections
+      attr_accessor :collections
 
       def initialize
-        @authors = []
-        @contributors = []
         @collections = []
       end
 
@@ -45,15 +43,17 @@ module AtomPub
         end
 
         collection.instance_eval(&block) if block_given?
+        collection.authors << author if author && collection.authors.empty?
+        collection.contributors << contributor if contributor && collection.contributors.empty?
         @store.register_collection(collection)
         collection
       end
 
       %w(author contributor).each do |person_type|
-        class_eval(<<-EOF, __FILE__, __LINE__)
+        class_eval <<-EOF
           def #{person_type}(options={})
-            raise ArgumentError if options.empty?
-            @#{person_type}s << Atom::#{person_type.capitalize}.new(options)
+            @#{person_type} = Atom::#{person_type.capitalize}.new(options) unless options.empty?
+            @#{person_type}
           end
         EOF
       end

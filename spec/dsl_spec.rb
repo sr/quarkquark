@@ -31,17 +31,9 @@ describe AtomPub::DSL do
   end
 
   %w(author contributor).each do |person_type|
-    describe "global #{person_type}" do
-      it "appends #{person_type}" do
-        @server.send(person_type, :name => 'foo')
-        @server.send("#{person_type}s").length.should == 1
-      end
-
-      it 'raises ArgumentError if no options provided' do
-        lambda {
-          @server.send(person_type)
-        }.should raise_error(ArgumentError)
-      end
+    it "registers global #{person_type}" do
+      @server.send(person_type, {:name => 'foo'})
+      @server.send(person_type).name.to_s.should == 'foo'
     end
   end
 
@@ -93,7 +85,7 @@ describe AtomPub::DSL do
       end
     end
 
-    # TODO: DRY the two fellowing examples
+    # TODO: DRY the fellowing examples
     it 'takes a block yielding an author' do
       collection = @server.collection { author :name => 'Primo' }
       collection.should have(1).authors
@@ -104,6 +96,22 @@ describe AtomPub::DSL do
       collection = @server.collection { contributor :name => 'Primo' }
       collection.should have(1).contributors
       collection.contributors.first.name.should == 'Primo'
+    end
+
+    %w(author contributor).each do |person_type|
+      it "uses the global #{person_type} if no author provided" do
+        @server.send(person_type, :name => 'Big-L')
+        collection = @server.collection { title 'Street Struck' }
+        collection.send("#{person_type}s").length.should == 1
+        collection.send("#{person_type}s").first.name.to_s.should == 'Big-L'
+      end
+
+      it "doesn't erase the collection-specific #{person_type}" do
+        @server.send(person_type, :name => 'Common')
+        collection = @server.collection { title 'foo'; send(person_type, :name => 'blargh') }
+        collection.send("#{person_type}s").length.should == 1
+        collection.send("#{person_type}s").first.name.to_s.should == 'blargh'
+      end
     end
   end
 end
