@@ -1,5 +1,6 @@
-require File.dirname(__FILE__) + '/spec_helper'
-require 'dsl'
+require 'rubygems'
+require 'spec'
+require File.dirname(__FILE__) + '/../lib/atom_pub/dsl'
 
 describe AtomPub::DSL do
   before(:each) do
