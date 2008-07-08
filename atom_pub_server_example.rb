@@ -10,9 +10,9 @@ server do
     author :name => 'John Smith'
   end
 
-  collection :linking
-  collection :foo, 'Foo Bar Spam'
-  collection 'My Collection Title'
+#  collection :linking
+#  collection :foo, 'Foo Bar Spam'
+#  collection 'My Collection Title'
 
   collection :photo do
     title 'My not-so-good photography'
