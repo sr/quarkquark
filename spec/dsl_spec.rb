@@ -74,7 +74,6 @@ describe AtomPub::DSL do
       collection.identifier.should == :articles
     end
 
-
     it 'takes no arguments but a block yelding a title and create an identifier from it' do
       collection = @server.collection { title 'bar' }
       collection.title.to_s.should == 'bar'
@@ -86,7 +85,6 @@ describe AtomPub::DSL do
       collection.title.to_s.should == 'Foo Bar'
       collection.identifier.should == :foofoo
     end
-
 
     %w(title subtitle logo icon).each do |attribute|
       it "takes a block yielding a #{attribute}" do

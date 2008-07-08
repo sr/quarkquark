@@ -25,7 +25,7 @@ module AtomPub
       end
 
       def store(name, options={})
-        Kernel.require File.dirname(__FILE__) + "/store/#{name}_store"
+        Kernel.require(File.dirname(__FILE__) + "/store/#{name}_store")
         klass = name.to_s.camelize
         @store = AtomPub::Store.const_get(klass).new(options)
       rescue LoadError
@@ -90,7 +90,7 @@ module AtomPub
       end
 
       %w(subtitle logo icon).each do |element|
-        class_eval(<<-EOF, __FILE__, __LINE__)
+        class_eval <<-EOF
           def #{element}(value=nil)
             @atom_feed.send(:#{element}=, value) if value
             @atom_feed.#{element}
