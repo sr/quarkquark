@@ -50,8 +50,10 @@ module AtomPub
       response << updated_entry.to_s
     end
 
-    DELETE '/{feed}/{id}' do
-      feed.entries.delete_if { |e| e.id == @id }
+    DELETE '/collections/{collection}/{entry_id}' do
+      raise NotFound unless @store.has_collection?(@collection)
+      @store.destroy(@collection, @entry_id)
+      response.status = 200
     end
   end
 end

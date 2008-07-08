@@ -24,12 +24,15 @@ module AtomPub
       end
 
       def feed_for(identifier)
-        find_feed(identifier).to_s
+        feed = find_feed(identifier).dup
+        feed.entries.sort_by { |e| e.edited }
+        feed
       end
 
       def create(collection, entry)
         new_entry = entry.dup
         new_entry.id = find_feed(collection).entries.length + 1
+        new_entry.edited = Time.now
         @feeds[collection.to_sym].entries << new_entry
         new_entry
       end
@@ -43,6 +46,10 @@ module AtomPub
         updated_entry.id == entry_id
         find_feed(collection).entries << updated_entry
         updated_entry
+      end
+
+      def destroy(collection, entry_id)
+        find_feed(collection).entries.delete_if { |e| e.id.to_s == entry_id.to_s }
       end
 
       private
