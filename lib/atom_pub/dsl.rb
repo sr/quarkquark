@@ -9,12 +9,6 @@ end
 module AtomPub
   module DSL
     class Server
-      attr_accessor :collections
-
-      def initialize
-        @collections = []
-      end
-
       def run!
         app = AtomPub::Server.new(@store)
         app = Rack::CommonLogger.new(app)
