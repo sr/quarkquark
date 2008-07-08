@@ -1,5 +1,4 @@
-require 'test/spec'
-
+require File.dirname(__FILE__) + '/spec_helper'
 require 'coset'
 require 'coset/collection'
 

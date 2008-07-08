@@ -1,7 +1,8 @@
+require 'rubygems'
 require 'rack'
 require 'pp'
 
-require 'coset/mimeparse'
+require File.dirname(__FILE__) + '/coset/mimeparse'
 
 class Coset
   def call(env)
