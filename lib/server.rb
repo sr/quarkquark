@@ -21,15 +21,18 @@ module AtomPub
 
     GET '/collections/{collection}' do
       raise NotFound unless @store.has_collection?(@collection)
-      response << @store.feed_for(@collection)
+      feed = @store.feed_for(@collection)
+      feed.entries.each { |e| e.edit_url = "#{request.url}/#{e.id}" }
       response['Content-Type'] = 'application/atom+xml'
+      response << feed.to_s
     end
 
     POST '/collections/{collection}' do
       raise NotFound unless @store.has_collection?(@collection)
       entry = @store.create(@collection, Atom::Entry.parse(request.body))
+      entry.edit_url = "#{request.url}/#{entry.id}"
       response['Content-Type'] = 'application/atom+xml'
-      response['Location'] = "#{request.url}/#{entry.id}"
+      response['Location'] = entry.edit_url
       response.status = 201
       response << entry.to_s
     end
