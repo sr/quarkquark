@@ -1,6 +1,7 @@
 $: << File.expand_path(File.dirname(__FILE__) + '/../vendor/atom-tools/lib')
 require 'atom/feed'
 require File.dirname(__FILE__) + '/core_ext'
+require File.dirname(__FILE__) + '/server'
 
 module AtomPub
   module DSL
