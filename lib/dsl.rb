@@ -83,6 +83,10 @@ module AtomPub
         @atom_feed.send(method, *args)
       end
 
+      def to_s
+        @atom_feed.to_s
+      end
+
       %w(subtitle logo icon).each do |element|
         class_eval(<<-EOF, __FILE__, __LINE__)
           def #{element}(value=nil)

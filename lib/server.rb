@@ -5,63 +5,46 @@ require 'coset'
 
 module AtomPub
   class Server < Coset
-    def initialize(svc=Atom::Service.new)
-      @svc = svc
+    def initialize(store)
+      @store = store
     end
 
     class NotFound < IndexError; end
+
     map_exception NotFound, 404
+    map_exception Atom::ParseError, 500
   
-    def feed
-      @svc.workspaces.first.collections.find { |feed| feed.id == @feed } or
-        raise NotFound
-    end
-
-    def entry
-      feed.entries.find { |entry| entry.id == @id } or
-        raise NotFound
-    end
-
-
     GET '/service' do
-      response['Content-Type'] = 'application/atomserv+xml'
-      response << @svc.to_s
+      response['Content-Type'] = 'application/atomsvc+xml'
+      response << @store.service_document
     end
 
-    GET '/collections/{feed}' do
-      feed.entries.each { |entry|
-        unless entry.edit_url
-          link = Atom::Link.new.update "rel" => "edit",
-          "href" => "#{feed.id}/#{entry.id}"
-          entry.links << link
-        end
-      }
-    
+    GET '/collections/{collection}' do
+      raise NotFound unless @store.has_collection?(@collection)
+      response << @store.feed_for(@collection)
       response['Content-Type'] = 'application/atom+xml'
-      response << feed.to_s
     end
 
-    POST '/collections/{feed}' do
-      new_entry = Atom::Entry.parse(req.body)
-
-      feed << new_entry
+    POST '/collections/{collection}' do
+      raise NotFound unless @store.has_collection?(@collection)
+      entry = @store.create(@collection, Atom::Entry.parse(request.body))
       response['Content-Type'] = 'application/atom+xml'
+      response['Location'] = "#{request.url}/#{entry.id}"
       response.status = 201
-      response << new_entry.to_s
-    end
-
-    GET '/{feed}/{id}' do
-      response['Content-Type'] = 'application/atom+xml'
       response << entry.to_s
     end
 
-    PUT '/{feed}/{id}' do
-      new_entry = Atom::Entry.parse(req.body)
-      feed << new_entry
-      new_entry.id = @id
-    
+    GET '/collections/{collection}/{entry_id}' do
+      raise NotFound unless @store.has_collection?(@collection)
       response['Content-Type'] = 'application/atom+xml'
-      response << new_entry.to_s
+      response << @store.retrieve(@collection, @entry_id)
+    end
+
+    PUT '/collections/{collection}/{entry_id}' do
+      raise NotFound unless @store.has_collection?(@collection)
+      updated_entry = @store.update(@collection, @entry_id, Atom::Entry.parse(request.body))
+      response['Content-Type'] = 'application/atom+xml'
+      response << updated_entry.to_s
     end
 
     DELETE '/{feed}/{id}' do
