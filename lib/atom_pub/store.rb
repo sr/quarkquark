@@ -1,8 +1,23 @@
+$: << File.dirname(__FILE__)
+
 module AtomPub
   module Store
     class NotFound < Exception; end
     class CollectionNotFound < NotFound; end
     class EntryNotFound < NotFound; end
+
+    def self.new(store, config={})
+      store_file = "store/#{store}"
+      Kernel.require(store_file)
+      klass = store.to_s.capitalize.gsub(/_(.)/) { $1.upcase }
+      if const_defined?(klass)
+        const_get(klass).new(config)
+      else
+        raise "could not find `#{name}::#{klass}' in `#{store_file}'"
+      end
+    rescue LoadError
+      raise "could not find any store named `#{store}'"
+    end
 
     class Base
       def feed_for(collection)

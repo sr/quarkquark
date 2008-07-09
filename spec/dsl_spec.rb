@@ -5,27 +5,14 @@ require File.dirname(__FILE__) + '/../lib/atom_pub/dsl'
 describe AtomPub::DSL do
   before(:each) do
     module AtomPub::Store; class DataMapper; end; end
-
     @server = AtomPub::DSL::Server.new
-    @store = mock('DataMapperStore', :register_collection => true)
+    @store = mock('DataMapper', :register_collection => true)
     AtomPub::Store::DataMapper.stub!(:new).and_return(@store)
   end
 
   describe 'When registering a store' do
-    it 'requires specified store' do
-      Kernel.should_receive(:require).with(/data_mapper_store/).and_return(true)
-      @server.store(:data_mapper)
-    end
-
-    it 'raises LoadError with an useful message if unknown store' do
-      lambda {
-        @server.store(:data_mapper)
-      }.should raise_error(RuntimeError, "Unknown store `data_mapper'.")
-    end
-
-    it 'initializes the store with given options' do
-      Kernel.stub!(:require).and_return(true)
-      AtomPub::Store::DataMapper.should_receive(:new).with(:adapter => 'sqlite3')
+    it 'loads and instantiate it with given options using AtomPub::Store.new' do
+      AtomPub::Store.should_receive(:new).with(:data_mapper, :adapter => 'sqlite3')
       @server.store(:data_mapper, :adapter => 'sqlite3')
     end
   end
@@ -39,7 +26,7 @@ describe AtomPub::DSL do
 
   describe 'collection' do
     before(:each) do
-      Kernel.should_receive(:require).with(/data_mapper_store/).and_return(true)
+      Kernel.stub!(:require).and_return(true)
       @server.store :data_mapper
     end
 

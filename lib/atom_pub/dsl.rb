@@ -16,16 +16,13 @@ module AtomPub
         Rack::Handler::Mongrel.run(app, :Port => 3000)
       end
 
-      def store(name, options={})
-        Kernel.require(File.dirname(__FILE__) + "/store/#{name}_store")
-        klass = name.to_s.camelize
-        @store = AtomPub::Store.const_get(klass).new(options)
-      rescue LoadError
-        raise "Unknown store `#{name}'."
+      def store(name=nil, options={})
+        @store = AtomPub::Store.new(name, options) if name
+        @store
       end
 
       def collection(*args, &block)
-        raise 'Please configure a store first.' unless @store
+        raise 'Please configure a store first.' unless store
 
         collection = Collection.new
         case args.length
@@ -39,7 +36,7 @@ module AtomPub
         collection.instance_eval(&block) if block_given?
         collection.authors << author if author && collection.authors.empty?
         collection.contributors << contributor if contributor && collection.contributors.empty?
-        @store.register_collection(collection)
+        store.register_collection(collection)
         collection
       end
 
