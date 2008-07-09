@@ -1,6 +1,0 @@
-[submodule "vendor/atom-tools"]
-	path = vendor/atom-tools
-	url = git://github.com/sr/atom-tools.git
-[submodule "vendor/sinatra"]
-	path = vendor/sinatra
-	url = git://github.com/bmizerany/sinatra.git
