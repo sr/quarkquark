@@ -1,6 +1,8 @@
+require File.dirname(__FILE__) + '/../store'
+
 module AtomPub
   module Store
-    class Memory
+    class Memory < Base
       def initialize(options={})
         @service = Atom::Service.new
         @workspace = @service.workspaces.new
@@ -19,6 +21,10 @@ module AtomPub
         @feeds.has_key?(identifier.to_sym)
       end
 
+      def has_entry?(collection, entry_id)
+        find_feed(collection).entries.detect { |e| e.id.to_s == entry_id.to_s }
+      end
+
       def service_document
         @service.to_s
       end
@@ -31,6 +37,7 @@ module AtomPub
       end
 
       def create(collection, entry)
+        super(collection, entry)
         new_entry = entry.dup
         new_entry.id = find_feed(collection).entries.length + 1
         new_entry.edited = Time.now
@@ -39,10 +46,12 @@ module AtomPub
       end
 
       def retrieve(collection, entry_id)
+        super(collection, entry_id)
         find_feed(collection).entries.find { |e| e.id.to_s == entry_id.to_s }
       end
 
       def update(collection, entry_id, updated_entry)
+        super(collection, entry_id, updated_entry)
         find_feed(collection).entries.delete_if { |e| e.id.to_s == entry_id.to_s }
         updated_entry.id == entry_id
         find_feed(collection).entries << updated_entry
@@ -50,6 +59,7 @@ module AtomPub
       end
 
       def destroy(collection, entry_id)
+        super(collection, entry_id)
         find_feed(collection).entries.delete_if { |e| e.id.to_s == entry_id.to_s }
       end
 

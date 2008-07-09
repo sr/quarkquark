@@ -2,6 +2,7 @@ module AtomPub
   module Store
     class NotFound < Exception; end
     class CollectionNotFound < NotFound; end
+    class EntryNotFound < NotFound; end
 
     class Base
       def feed_for(collection)
@@ -19,10 +20,12 @@ module AtomPub
 
       def update(collection, entry_id, entry)
         raise CollectionNotFound unless has_collection?(collection)
+        raise EntryNotFound unless has_entry?(collection, entry_id)
       end
 
       def destroy(collection, entry_id)
         raise CollectionNotFound unless has_collection?(collection)
+        raise EntryNotFound unless has_entry?(collection, entry_id)
       end
     end
   end
