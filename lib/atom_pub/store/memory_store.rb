@@ -32,7 +32,13 @@ module AtomPub
       def feed_for(collection)
         super(collection)
         feed = find_feed(collection).dup
-        feed.entries.sort_by { |e| e.edited }
+        entries = feed.entries.dup
+        feed.entries.delete_if { true }
+        entries.sort_by { |e| e.edited }.reverse.each do |entry|
+          puts entry.inspect
+          feed.entries << entry
+        end
+        puts feed.entries.inspect
         feed
       end
 
@@ -40,7 +46,7 @@ module AtomPub
         super(collection, entry)
         new_entry = entry.dup
         new_entry.id = find_feed(collection).entries.length + 1
-        new_entry.edited = Time.now
+        new_entry.edited!
         @feeds[collection.to_sym].entries << new_entry
         new_entry
       end
