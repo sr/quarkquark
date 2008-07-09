@@ -23,8 +23,9 @@ module AtomPub
         @service.to_s
       end
 
-      def feed_for(identifier)
-        feed = find_feed(identifier).dup
+      def feed_for(collection)
+        super(collection)
+        feed = find_feed(collection).dup
         feed.entries.sort_by { |e| e.edited }
         feed
       end
