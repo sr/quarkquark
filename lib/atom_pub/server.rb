@@ -17,7 +17,7 @@ module AtomPub
 
     map_exception Store::CollectionNotFound,  404, 'Missing collection.'
     map_exception Store::EntryNotFound,       404, 'Missing entry.'
-    map_exception Atom::ParseError,           500
+    map_exception Atom::ParseError,           400, 'Malformed entry.'
   
     GET '/service' do
       response['Content-Type'] = 'application/atomsvc+xml'
